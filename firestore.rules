@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Permite leer cualquier pedido (público)
+    match /pedidos_camisetas/{pedidoId} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}
