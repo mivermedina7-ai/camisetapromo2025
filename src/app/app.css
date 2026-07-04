@@ -55,6 +55,7 @@
   background-size: cover;
   background-position: center 30%;
   background-repeat: no-repeat;
+  background-attachment: fixed;
   z-index: 0;
 }
 
