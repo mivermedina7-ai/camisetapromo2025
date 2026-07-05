@@ -1,20 +1,115 @@
-<div class="empty-state" *ngIf="(recuerdos || []).length === 0">
+<div class="empty-state" *ngIf="items.length === 0">
   <i class="fas fa-camera-retro"></i>
   <p>No hay recuerdos publicados todavía.</p>
 </div>
 
-<div class="memory-grid" *ngIf="(recuerdos || []).length > 0">
-  <article class="memory-card" [class.featured]="recuerdo.estado === 'destacado'" *ngFor="let recuerdo of recuerdos">
-    <img *ngIf="recuerdo.imagenUrl" [src]="recuerdo.imagenUrl" [alt]="'Foto de ' + recuerdo.nombre">
+<div class="memory-grid" *ngIf="items.length > 0">
+  <article class="memory-card" [class.featured]="recuerdo.estado === 'destacado'" *ngFor="let recuerdo of items">
+    <figure class="memory-media" *ngIf="recuerdo.imagenUrl; else textOnly">
+      <img [src]="recuerdo.imagenUrl" [alt]="'Foto de ' + recuerdo.nombre">
+    </figure>
+    <ng-template #textOnly>
+      <div class="memory-media placeholder">
+        <i class="fas fa-quote-left"></i>
+      </div>
+    </ng-template>
 
     <div class="memory-body">
       <div class="memory-meta">
         <strong>{{ recuerdo.nombre }}</strong>
-        <span *ngIf="recuerdo.promocion">Prom. {{ recuerdo.promocion }}</span>
+        <span>Prom. 2025</span>
         <em *ngIf="admin">{{ recuerdo.estado }}</em>
         <em class="featured-label" *ngIf="!admin && recuerdo.estado === 'destacado'">Destacado</em>
       </div>
+
       <p>{{ recuerdo.mensaje }}</p>
+
+      <div class="community-tools" *ngIf="allowComments">
+        <button class="text-action" type="button" (click)="toggleComentarios(recuerdo)">
+          <i class="fas fa-comments"></i>
+          {{ comentariosDe(recuerdo).length }} comentarios
+        </button>
+      </div>
+
+      <section class="comments-box" *ngIf="allowComments && draftPara(recuerdo).abierto">
+        <div class="comment-list" *ngIf="comentariosRaizDe(recuerdo).length > 0; else noComments">
+          <article class="comment-thread" *ngFor="let comentario of comentariosRaizDe(recuerdo)">
+            <div class="comment-item">
+              <strong>{{ textoSeguro(comentario.nombre) }}</strong>
+              <p>{{ textoSeguro(comentario.mensaje) }}</p>
+              <button class="comment-reply-action" type="button" *ngIf="comentario.id" (click)="toggleRespuesta(recuerdo, comentario)">
+                <i class="fas fa-reply"></i>
+                Responder
+              </button>
+            </div>
+
+            <div class="reply-list" *ngIf="respuestasDe(comentario).length > 0">
+              <article class="comment-item reply" *ngFor="let respuesta of respuestasDe(comentario)">
+                <strong>{{ textoSeguro(respuesta.nombre) }}</strong>
+                <p>{{ textoSeguro(respuesta.mensaje) }}</p>
+              </article>
+            </div>
+
+            <form
+              class="comment-form reply-form"
+              *ngIf="comentario.id && draftPara(recuerdo, comentario.id || '').abierto"
+              (submit)="$event.preventDefault()">
+              <input
+                type="text"
+                [name]="'replyName-' + comentario.id"
+                [(ngModel)]="draftPara(recuerdo, comentario.id || '').nombre"
+                placeholder="Tu nombre">
+              <textarea
+                [name]="'replyMessage-' + comentario.id"
+                [(ngModel)]="draftPara(recuerdo, comentario.id || '').mensaje"
+                rows="2"
+                maxlength="280"
+                placeholder="Escribe una respuesta breve"></textarea>
+
+              <p class="status success" *ngIf="draftPara(recuerdo, comentario.id || '').success">{{ draftPara(recuerdo, comentario.id || '').success }}</p>
+              <p class="status error" *ngIf="draftPara(recuerdo, comentario.id || '').error">{{ draftPara(recuerdo, comentario.id || '').error }}</p>
+
+              <button
+                class="btn btn-small btn-primary"
+                type="button"
+                [disabled]="draftPara(recuerdo, comentario.id || '').loading"
+                (click)="comentar(recuerdo, comentario.id || '')">
+                <i class="fas" [class.fa-paper-plane]="!draftPara(recuerdo, comentario.id || '').loading" [class.fa-spinner]="draftPara(recuerdo, comentario.id || '').loading" [class.fa-spin]="draftPara(recuerdo, comentario.id || '').loading"></i>
+                {{ draftPara(recuerdo, comentario.id || '').loading ? 'Enviando' : 'Responder' }}
+              </button>
+            </form>
+          </article>
+        </div>
+        <ng-template #noComments>
+          <p class="comment-empty">Sé el primero en dejar un comentario.</p>
+        </ng-template>
+
+        <form class="comment-form" (submit)="$event.preventDefault()">
+          <input
+            type="text"
+            name="commentName"
+            [(ngModel)]="draftPara(recuerdo).nombre"
+            placeholder="Tu nombre">
+          <textarea
+            name="commentMessage"
+            [(ngModel)]="draftPara(recuerdo).mensaje"
+            rows="2"
+            maxlength="280"
+            placeholder="Escribe un comentario breve"></textarea>
+
+          <p class="status success" *ngIf="draftPara(recuerdo).success">{{ draftPara(recuerdo).success }}</p>
+          <p class="status error" *ngIf="draftPara(recuerdo).error">{{ draftPara(recuerdo).error }}</p>
+
+          <button
+            class="btn btn-small btn-primary"
+            type="button"
+            [disabled]="draftPara(recuerdo).loading"
+            (click)="comentar(recuerdo)">
+            <i class="fas" [class.fa-paper-plane]="!draftPara(recuerdo).loading" [class.fa-spinner]="draftPara(recuerdo).loading" [class.fa-spin]="draftPara(recuerdo).loading"></i>
+            {{ draftPara(recuerdo).loading ? 'Enviando' : 'Comentar' }}
+          </button>
+        </form>
+      </section>
 
       <div class="memory-actions" *ngIf="admin">
         <button

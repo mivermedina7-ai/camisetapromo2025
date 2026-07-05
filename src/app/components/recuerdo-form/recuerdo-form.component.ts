@@ -19,7 +19,6 @@ export class RecuerdoFormComponent {
 
   form: RecuerdoRegistro = {
     nombre: '',
-    promocion: '',
     mensaje: ''
   };
   file: File | null = null;
@@ -68,7 +67,7 @@ export class RecuerdoFormComponent {
 
     try {
       await this.recuerdosService.crearRecuerdo(this.form, this.file);
-      this.form = { nombre: '', promocion: '', mensaje: '' };
+      this.form = { nombre: '', mensaje: '' };
       this.file = null;
       this.previewUrl = '';
       this.successMessage = 'Recuerdo enviado para revisión.';

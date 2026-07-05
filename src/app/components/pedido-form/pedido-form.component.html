@@ -2,7 +2,7 @@
   <div class="form-row">
     <label class="field">
       <span>Nombre en camiseta</span>
-      <input type="text" name="nombre" [(ngModel)]="form.nombre" placeholder="Ej. Juan Pérez" required>
+      <input type="text" name="nombre" [(ngModel)]="form.nombre" placeholder="Ej. Juan Perez" required>
     </label>
 
     <label class="field">
@@ -22,30 +22,12 @@
     </button>
   </div>
 
-  <div class="choice-group" aria-label="Corte de camiseta">
-    <button
-      *ngFor="let item of cortes"
-      type="button"
-      class="choice-button"
-      [class.active]="form.corte === item.valor"
-      (click)="seleccionarCorte(item.valor)">
-      {{ item.etiqueta }}
-    </button>
-  </div>
-
-  <div class="form-row">
-    <label class="field">
-      <span>Talla</span>
-      <select name="talla" [(ngModel)]="form.talla" required>
-        <option *ngFor="let item of tallasDisponibles" [value]="item.talla">{{ item.talla }}</option>
-      </select>
-    </label>
-
-    <label class="field">
-      <span>Teléfono</span>
-      <input type="tel" name="telefono" [(ngModel)]="form.telefono" placeholder="Opcional">
-    </label>
-  </div>
+  <label class="field">
+    <span>Talla</span>
+    <select name="talla" [(ngModel)]="form.talla" required>
+      <option *ngFor="let item of tallasDisponibles" [value]="item.talla">{{ item.talla }}</option>
+    </select>
+  </label>
 
   <div class="measure-note" *ngIf="medidaSeleccionada">
     <strong>{{ medidaSeleccionada.talla }}</strong>
@@ -53,11 +35,6 @@
     <span>Cintura {{ medidaSeleccionada.cintura }}</span>
     <span>Largo {{ medidaSeleccionada.largo }}</span>
   </div>
-
-  <label class="field">
-    <span>Observación</span>
-    <textarea name="notas" [(ngModel)]="form.notas" rows="3" placeholder="Ej. confirmar medida antes de confección"></textarea>
-  </label>
 
   <p class="status success" *ngIf="successMessage">
     <i class="fas fa-check-circle"></i>

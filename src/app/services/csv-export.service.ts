@@ -6,15 +6,12 @@ import { Pedido } from '../models/pedido.model';
 })
 export class CsvExportService {
   exportarPedidos(pedidos: Pedido[]): void {
-    const headers = ['Nombre', 'Género', 'Corte', 'Talla', 'Número camiseta', 'Teléfono', 'Notas', 'Fecha'];
+    const headers = ['Nombre', 'Género', 'Talla', 'Número camiseta', 'Fecha'];
     const rows = pedidos.map(pedido => [
       pedido.nombre,
       pedido.genero || '',
-      pedido.corte || '',
       pedido.talla,
       pedido.numero ?? '',
-      pedido.telefono || '',
-      pedido.notas || '',
       pedido.fecha ? new Date(pedido.fecha).toLocaleString('es-PE') : ''
     ]);
 
@@ -27,7 +24,7 @@ export class CsvExportService {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `pedidos-promocion-${new Date().toISOString().slice(0, 10)}.csv`;
+    link.download = `pedidos-promocion-2025-${new Date().toISOString().slice(0, 10)}.csv`;
     link.click();
     URL.revokeObjectURL(url);
   }

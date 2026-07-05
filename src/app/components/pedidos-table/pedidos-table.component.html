@@ -8,7 +8,6 @@
     <span>N°</span>
     <span>Nombre</span>
     <span>Género</span>
-    <span>Corte</span>
     <span>Talla</span>
     <span *ngIf="admin">Acción</span>
   </div>
@@ -17,7 +16,6 @@
     <strong>{{ pedido.numero }}</strong>
     <span>{{ pedido.nombre }}</span>
     <span>{{ pedido.genero || 'Pendiente' }}</span>
-    <span>{{ pedido.corte || 'Clásico' }}</span>
     <span class="size-chip">{{ pedido.talla }}</span>
     <button
       *ngIf="admin"

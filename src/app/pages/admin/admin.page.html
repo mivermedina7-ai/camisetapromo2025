@@ -33,7 +33,7 @@
         <i class="fas fa-chart-simple"></i>
         <div>
           <h2>Dashboard de tallas</h2>
-          <p>Resumen por género, corte y talla.</p>
+          <p>Resumen por género y talla.</p>
         </div>
       </div>
       <app-pedido-dashboard [pedidos]="pedidos"></app-pedido-dashboard>
@@ -85,6 +85,36 @@
       </div>
     </section>
 
+    <section class="surface-panel" *ngIf="inscripcionesDeportivas$ | async as inscripcionesDeportivas">
+      <div class="panel-heading">
+        <i class="fas fa-person-running"></i>
+        <div>
+          <h2>Inscritos deportivos</h2>
+          <p>Compañeros de la Promoción 2025 inscritos para jugar.</p>
+        </div>
+      </div>
+
+      <div class="sports-admin-list" *ngIf="inscripcionesDeportivas.length > 0; else noInscripcionesDeportivas">
+        <article class="sports-admin-item" *ngFor="let inscripcion of inscripcionesDeportivas">
+          <div>
+            <strong>{{ inscripcion.nombre }}</strong>
+            <span>{{ inscripcion.disciplinas.join(', ') }}</span>
+          </div>
+          <button class="btn btn-small btn-danger" type="button" (click)="eliminarInscripcionDeportiva(inscripcion)">
+            <i class="fas fa-trash"></i>
+            Eliminar
+          </button>
+        </article>
+      </div>
+
+      <ng-template #noInscripcionesDeportivas>
+        <div class="empty-state">
+          <i class="fas fa-medal"></i>
+          <p>Aún no hay inscritos deportivos.</p>
+        </div>
+      </ng-template>
+    </section>
+
     <section class="surface-panel" *ngIf="recuerdos$ | async as recuerdos">
       <div class="panel-heading">
         <i class="fas fa-images"></i>
@@ -101,6 +131,39 @@
         (pendiente)="pausarRecuerdo($event)"
         (eliminar)="eliminarRecuerdo($event)">
       </app-recuerdo-gallery>
+    </section>
+
+    <section class="surface-panel" *ngIf="comentarios$ | async as comentarios">
+      <div class="panel-heading">
+        <i class="fas fa-comments"></i>
+        <div>
+          <h2>Comentarios del muro</h2>
+          <p>Revisa o elimina conversaciones publicadas por la Promoción 2025.</p>
+        </div>
+      </div>
+
+      <div class="admin-comments" *ngIf="comentarios.length > 0; else noComentarios">
+        <article class="admin-comment" *ngFor="let comentario of comentarios" [class.pending]="comentario.estado === 'pendiente'" [class.censored]="comentario.censurado">
+          <div>
+            <strong>{{ textoSeguro(comentario.nombre) }}</strong>
+            <span>{{ comentario.parentId ? 'respuesta' : comentario.estado }}</span>
+          </div>
+          <p>{{ textoSeguro(comentario.mensaje) }}</p>
+          <div class="admin-comment-actions">
+            <button class="btn btn-small btn-danger" type="button" (click)="eliminarComentario(comentario)">
+              <i class="fas fa-trash"></i>
+              Eliminar
+            </button>
+          </div>
+        </article>
+      </div>
+
+      <ng-template #noComentarios>
+        <div class="empty-state">
+          <i class="fas fa-comments"></i>
+          <p>Aún no hay comentarios enviados.</p>
+        </div>
+      </ng-template>
     </section>
 
     <section class="surface-panel admin-managers">

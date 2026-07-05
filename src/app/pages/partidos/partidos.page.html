@@ -1,29 +1,99 @@
 <section class="page-hero compact">
   <div class="page-shell">
-    <span class="kicker">Cronograma deportivo</span>
-    <h1>Partidos del reencuentro</h1>
-    <p>Encuentros, horarios, lugares y resultados para acompañar la jornada deportiva de las promociones.</p>
+    <span class="kicker">Deportes Promoción 2025</span>
+    <h1>Inscripción a disciplinas</h1>
+    <p>Elige los partidos que quieres jugar para organizar equipos, cupos y horarios del reencuentro.</p>
   </div>
 </section>
 
 <main class="page-shell content-band">
+  <div class="sports-layout">
+    <section class="surface-panel">
+      <div class="panel-heading">
+        <i class="fas fa-medal"></i>
+        <div>
+          <h2>Quiero jugar</h2>
+          <p>Selecciona una o varias disciplinas de la Promoción 2025.</p>
+        </div>
+      </div>
+
+      <form class="sports-form" (submit)="$event.preventDefault()">
+        <label class="field">
+          <span>Nombre completo</span>
+          <input type="text" name="nombre" [(ngModel)]="form.nombre" placeholder="Tu nombre" required>
+        </label>
+
+        <div class="discipline-picker">
+          <button
+            *ngFor="let disciplina of disciplinas"
+            type="button"
+            class="discipline-option"
+            [class.active]="estaSeleccionada(disciplina.id)"
+            (click)="toggleDisciplina(disciplina.id)">
+            <i class="fas" [ngClass]="disciplina.icono"></i>
+            <span>{{ disciplina.nombre }}</span>
+          </button>
+        </div>
+
+        <p class="status success" *ngIf="successMessage">
+          <i class="fas fa-check-circle"></i>
+          {{ successMessage }}
+        </p>
+
+        <p class="status error" *ngIf="errorMessage">
+          <i class="fas fa-exclamation-circle"></i>
+          {{ errorMessage }}
+        </p>
+
+        <button class="btn btn-primary full" type="button" [disabled]="isLoading" (click)="registrar()">
+          <i class="fas" [class.fa-person-running]="!isLoading" [class.fa-spinner]="isLoading" [class.fa-spin]="isLoading"></i>
+          {{ isLoading ? 'Guardando' : 'Registrar deportes' }}
+        </button>
+      </form>
+    </section>
+
+    <section class="surface-panel sports-summary" *ngIf="inscripciones$ | async as inscripciones">
+      <div class="panel-heading">
+        <i class="fas fa-clipboard-list"></i>
+        <div>
+          <h2>Equipos en formacion</h2>
+          <p>Lista pública de compañeros inscritos por disciplina.</p>
+        </div>
+      </div>
+
+      <div class="discipline-grid">
+        <article class="discipline-card" *ngFor="let disciplina of disciplinas">
+          <header>
+            <i class="fas" [ngClass]="disciplina.icono"></i>
+            <div>
+              <h3>{{ disciplina.nombre }}</h3>
+              <p>{{ disciplina.detalle }}</p>
+            </div>
+            <strong>{{ inscritosPor(inscripciones, disciplina.id).length }}</strong>
+          </header>
+
+          <ul *ngIf="inscritosPor(inscripciones, disciplina.id).length > 0; else sinInscritos">
+            <li *ngFor="let jugador of inscritosPor(inscripciones, disciplina.id)">
+              {{ jugador.nombre }}
+            </li>
+          </ul>
+          <ng-template #sinInscritos>
+            <p class="empty-discipline">Aún no hay inscritos.</p>
+          </ng-template>
+        </article>
+      </div>
+    </section>
+  </div>
+
   <section class="surface-panel">
     <div class="panel-heading">
-      <i class="fas fa-futbol"></i>
+      <i class="fas fa-calendar-check"></i>
       <div>
-        <h2>Programación</h2>
-        <p>Los partidos se publican desde el panel de administración.</p>
+        <h2>Programación oficial</h2>
+        <p>Horarios, lugares y resultados cuando administración los publique.</p>
       </div>
     </div>
 
     <app-partido-list [partidos]="partidos$ | async"></app-partido-list>
-  </section>
-
-  <section class="sport-note">
-    <i class="fas fa-whistle"></i>
-    <div>
-      <h2>Sugerencia para la organización</h2>
-      <p>Se puede agregar inscripción de equipos, fixture por llaves y tabla de goleadores cuando definan las reglas del campeonato.</p>
-    </div>
   </section>
 </main>

@@ -25,10 +25,6 @@ export class PedidoDashboardComponent {
     return this.contarPor('genero', 'Sin género');
   }
 
-  get porCorte(): StatItem[] {
-    return this.contarPor('corte', 'Sin corte');
-  }
-
   get porTalla(): StatItem[] {
     return this.contarPor('talla', 'Sin talla');
   }

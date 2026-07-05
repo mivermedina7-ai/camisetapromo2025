@@ -11,7 +11,7 @@ export const routes: Routes = [
   {
     path: '',
     component: HomePageComponent,
-    title: 'Promoción 2026 IEE José María Arguedas'
+    title: 'Promoción 2025 IEE José María Arguedas'
   },
   {
     path: 'registro',
@@ -26,12 +26,12 @@ export const routes: Routes = [
   {
     path: 'comunidad',
     component: ComunidadPageComponent,
-    title: 'Recuerdos de promoción'
+    title: 'Comunidad Promoción 2025'
   },
   {
     path: 'partidos',
     component: PartidosPageComponent,
-    title: 'Partidos del reencuentro'
+    title: 'Deportes Promoción 2025'
   },
   {
     path: 'agenda',
