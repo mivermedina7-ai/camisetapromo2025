@@ -88,7 +88,7 @@ service cloud.firestore {
     }
 
     match /comentarios_recuerdos/{comentarioId} {
-      allow read: if resource.data.estado in ['publicado', 'aprobado'] || isAdmin();
+      allow read: if resource.data.estado in ['publicado', 'aprobado', 'pendiente'] || isAdmin();
       allow create: if request.resource.data.keys().hasOnly([
           'recuerdoId',
           'parentId',

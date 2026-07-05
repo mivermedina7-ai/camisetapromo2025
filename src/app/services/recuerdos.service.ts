@@ -42,7 +42,7 @@ export class RecuerdosService {
 
   obtenerComentariosPublicos(): Observable<ComentarioRecuerdo[]> {
     const ref = collection(this.firestore, this.comentariosColeccion);
-    const q = query(ref, where('estado', 'in', ['publicado', 'aprobado']));
+    const q = query(ref, where('estado', 'in', ['publicado', 'aprobado', 'pendiente']));
     return (collectionData(q, { idField: 'id' }) as Observable<ComentarioRecuerdo[]>).pipe(
       map(comentarios => this.ordenarComentarios(comentarios)),
       catchError(err => {
