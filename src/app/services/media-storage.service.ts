@@ -1,26 +1,26 @@
-import { Injectable, inject } from '@angular/core';
-import { Storage, deleteObject, getDownloadURL, ref, uploadBytes } from '@angular/fire/storage';
+import { Injectable } from '@angular/core';
 
+/**
+ * @deprecated Reemplazado por `CloudinaryStorageService`.
+ *
+ * Firebase Storage requiere plan Blaze (con tarjeta), mientras que
+ * Cloudinary nos da 25 GB gratis sin tarjeta. Este servicio queda
+ * en el repo solo por referencia — no se inyecta en ningún lado.
+ *
+ * Pendiente: borrar este archivo después de validar que
+ * CloudinaryStorageService funciona en producción.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class MediaStorageService {
-  private readonly storage = inject(Storage);
-
-  async subirImagenRecuerdo(file: File): Promise<{ url: string; path: string }> {
-    const safeName = file.name
-      .normalize('NFD')
-      .replace(/[\u0300-\u036f]/g, '')
-      .replace(/[^a-zA-Z0-9._-]/g, '-')
-      .toLowerCase();
-    const path = `recuerdos/${Date.now()}-${safeName}`;
-    const storageRef = ref(this.storage, path);
-    await uploadBytes(storageRef, file);
-    const url = await getDownloadURL(storageRef);
-    return { url, path };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  async subirImagenRecuerdo(_file: File): Promise<{ url: string; path: string }> {
+    throw new Error('MediaStorageService está deprecado. Usa CloudinaryStorageService.');
   }
 
-  eliminarPorPath(path: string): Promise<void> {
-    return deleteObject(ref(this.storage, path));
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  eliminarPorPath(_path: string): Promise<void> {
+    return Promise.resolve();
   }
 }

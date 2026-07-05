@@ -5,7 +5,6 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { getApp, initializeApp, provideFirebaseApp } from '@angular/fire/app';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { initializeFirestore, provideFirestore } from '@angular/fire/firestore';
-import { getStorage, provideStorage } from '@angular/fire/storage';
 
 import { routes } from './app.routes';
 import { environment } from '../environments/environment';
@@ -16,9 +15,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(),
     provideAnimations(),
-    provideFirebaseApp(() => initializeApp(environment.firebase)),
+provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideAuth(() => getAuth()),
-    provideFirestore(() => initializeFirestore(getApp(), { experimentalForceLongPolling: true })),
-    provideStorage(() => getStorage())
+    provideFirestore(() => initializeFirestore(getApp(), { experimentalForceLongPolling: true }))
   ]
 };

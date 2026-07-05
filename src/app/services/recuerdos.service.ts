@@ -2,14 +2,14 @@ import { Injectable, inject } from '@angular/core';
 import { Firestore, addDoc, collection, collectionData, deleteDoc, doc, query, updateDoc, where } from '@angular/fire/firestore';
 import { Observable, catchError, map, of } from 'rxjs';
 import { Recuerdo, RecuerdoRegistro } from '../models/recuerdo.model';
-import { MediaStorageService } from './media-storage.service';
+import { CloudinaryStorageService } from './cloudinary-storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class RecuerdosService {
   private readonly firestore = inject(Firestore);
-  private readonly storage = inject(MediaStorageService);
+  private readonly storage = inject(CloudinaryStorageService);
   private readonly coleccion = 'recuerdos_promocion';
 
   obtenerAprobados(): Observable<Recuerdo[]> {
@@ -30,12 +30,12 @@ export class RecuerdosService {
 
   async crearRecuerdo(data: RecuerdoRegistro, file?: File | null): Promise<void> {
     let imagenUrl = '';
-    let imagenPath = '';
+    let imagenPublicId = '';
 
     if (file) {
       const uploaded = await this.storage.subirImagenRecuerdo(file);
       imagenUrl = uploaded.url;
-      imagenPath = uploaded.path;
+      imagenPublicId = uploaded.publicId;
     }
 
     const ref = collection(this.firestore, this.coleccion);
@@ -44,7 +44,7 @@ export class RecuerdosService {
       promocion: data.promocion?.trim() || '',
       mensaje: data.mensaje.trim(),
       imagenUrl,
-      imagenPath,
+      imagenPublicId,
       estado: 'pendiente',
       fecha: new Date().toISOString()
     });
@@ -63,8 +63,8 @@ export class RecuerdosService {
   }
 
   async eliminarRecuerdo(recuerdo: Recuerdo): Promise<void> {
-    if (recuerdo.imagenPath) {
-      await this.storage.eliminarPorPath(recuerdo.imagenPath).catch(() => undefined);
+    if (recuerdo.imagenPublicId) {
+      await this.storage.eliminarPorPublicId(recuerdo.imagenPublicId).catch(() => undefined);
     }
 
     if (recuerdo.id) {
