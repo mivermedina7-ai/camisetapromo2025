@@ -60,13 +60,21 @@ export class PedidoFormComponent {
     this.isLoading = true;
 
     try {
-      const numeroExiste = await this.withTimeout(
-        this.pedidosService.verificarNumeroExiste(this.form.numero),
+      const numeroOcupadoEnGenero = await this.withTimeout(
+        this.pedidosService.verificarNumeroEnGenero(this.form.numero, this.form.genero),
         'La conexión está tardando demasiado al validar el número.'
       );
 
-      if (numeroExiste) {
-        this.errorMessage = 'Ese número ya fue registrado.';
+      if (numeroOcupadoEnGenero) {
+        const etiqueta = this.form.genero === 'mujer' ? 'damas' : 'caballeros';
+        const existente = await this.withTimeout(
+          this.pedidosService.obtenerPedidoPorNumeroYGenero(this.form.numero, this.form.genero),
+          'La conexión está tardando demasiado al consultar el registro existente.'
+        );
+        const suNombre = existente?.nombre?.trim();
+        this.errorMessage = suNombre
+          ? `El número ${this.form.numero} ya está registrado en ${etiqueta} por ${suNombre}. Puedes repetirlo en la otra categoría.`
+          : `El número ${this.form.numero} ya está registrado en ${etiqueta}. Puedes repetirlo en la otra categoría.`;
         return;
       }
 
