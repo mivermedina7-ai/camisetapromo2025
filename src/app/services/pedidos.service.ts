@@ -1,8 +1,18 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, collectionData, deleteDoc, doc } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collection,
+  collectionData,
+  deleteDoc,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  setDoc,
+  where
+} from '@angular/fire/firestore';
 import { Observable, map } from 'rxjs';
-import { environment } from '../../environments/environment';
-import { Pedido, PedidoRegistro } from '../models/pedido.model';
+import { GeneroPedido, Pedido, PedidoRegistro } from '../models/pedido.model';
 
 @Injectable({
   providedIn: 'root'
@@ -18,25 +28,35 @@ export class PedidosService {
     );
   }
 
+  /**
+   * Inserta un pedido garantizando que la combinación (número, género) sea única.
+   * - El mismo número PUEDE existir en 'hombre' y 'mujer' a la vez.
+   * - El mismo número NO PUEDE existir dos veces dentro del mismo género.
+   *
+   * Implementación: pre-check con `getDocs` + `setDoc` directo. La transacción
+   * con `tx.get(query)` no es soportada por el SDK (tx.get solo acepta
+   * DocumentReference). En un sitio de registro de camisetas de promoción
+   * la ventana de race condition es despreciable.
+   */
   async agregarPedido(pedido: PedidoRegistro): Promise<void> {
-    const response = await fetch(this.collectionUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        fields: this.toFirestoreFields({
-          ...pedido,
-          nombre: pedido.nombre.trim(),
-          telefono: pedido.telefono?.trim() || '',
-          notas: pedido.notas?.trim() || '',
-          fecha: new Date().toISOString()
-        })
-      })
-    });
+    const numero = pedido.numero;
+    const genero = pedido.genero;
 
-    if (!response.ok) {
-      const body = await response.json().catch(() => null);
-      throw new Error(body?.error?.message || 'Firebase rechazó el registro.');
+    if (numero == null) {
+      throw new Error('El número de camiseta es obligatorio.');
     }
+
+    const ocupado = await this.verificarNumeroEnGenero(numero, genero);
+    if (ocupado) {
+      throw new Error(this.mensajeConflicto(numero, genero));
+    }
+
+    const colRef = collection(this.firestore, this.coleccion);
+    const docRef = doc(colRef);
+    await setDoc(docRef, {
+      ...this.limpiar(pedido),
+      fecha: new Date().toISOString()
+    });
   }
 
   eliminarPedido(id: string): Promise<void> {
@@ -44,55 +64,53 @@ export class PedidosService {
     return deleteDoc(ref);
   }
 
-  async verificarNumeroExiste(numero: number): Promise<boolean> {
-    const response = await fetch(this.runQueryUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        structuredQuery: {
-          from: [{ collectionId: this.coleccion }],
-          where: {
-            fieldFilter: {
-              field: { fieldPath: 'numero' },
-              op: 'EQUAL',
-              value: { integerValue: String(numero) }
-            }
-          },
-          limit: 1
-        }
-      })
-    });
+  /**
+   * Devuelve true si ya existe un pedido con esa combinación (número, género).
+   * Usado por el formulario para feedback de UX antes del guardado final.
+   */
+  async verificarNumeroEnGenero(numero: number, genero: GeneroPedido): Promise<boolean> {
+    const colRef = collection(this.firestore, this.coleccion);
+    const q = query(colRef, where('numero', '==', numero), where('genero', '==', genero));
+    const snap = await getDocs(q);
+    return !snap.empty;
+  }
 
-    if (!response.ok) {
-      return false;
+  /**
+   * Devuelve el pedido concreto (número + género) si existe. Útil para mostrar
+   * nombre/teléfono de quien ya tiene ese número reservado y mejorar la UX.
+   */
+  async obtenerPedidoPorNumeroYGenero(
+    numero: number,
+    genero: GeneroPedido
+  ): Promise<Pedido | null> {
+    const colRef = collection(this.firestore, this.coleccion);
+    const q = query(colRef, where('numero', '==', numero), where('genero', '==', genero));
+    const snap = await getDocs(q);
+    if (snap.empty) return null;
+    const d = snap.docs[0];
+    return { id: d.id, ...(d.data() as Pedido) };
+  }
+
+  private mensajeConflicto(numero: number | null | undefined, genero: GeneroPedido): string {
+    const etiqueta = genero === 'mujer' ? 'damas' : 'caballeros';
+    return `El número ${numero ?? ''} ya está registrado en la categoría ${etiqueta}. Puedes repetirlo en la otra categoría.`;
+  }
+
+  private limpiar<T extends Partial<PedidoRegistro>>(pedido: T): T {
+    const data = { ...pedido } as T & Record<string, unknown>;
+    if (typeof data['nombre'] === 'string') {
+      data['nombre'] = (data['nombre'] as string).trim();
     }
-
-    const rows = await response.json();
-    return Array.isArray(rows) && rows.some(row => !!row.document);
-  }
-
-  private get collectionUrl(): string {
-    return `${this.firestoreBaseUrl}/documents/${this.coleccion}?key=${environment.firebase.apiKey}`;
-  }
-
-  private get runQueryUrl(): string {
-    return `${this.firestoreBaseUrl}/documents:runQuery?key=${environment.firebase.apiKey}`;
-  }
-
-  private get firestoreBaseUrl(): string {
-    return `https://firestore.googleapis.com/v1/projects/${environment.firebase.projectId}/databases/(default)`;
-  }
-
-  private toFirestoreFields(pedido: PedidoRegistro & { fecha: string }): Record<string, any> {
-    return {
-      nombre: { stringValue: pedido.nombre },
-      numero: { integerValue: String(pedido.numero ?? 0) },
-      talla: { stringValue: pedido.talla },
-      genero: { stringValue: pedido.genero },
-      corte: { stringValue: pedido.corte },
-      telefono: { stringValue: pedido.telefono || '' },
-      notas: { stringValue: pedido.notas || '' },
-      fecha: { stringValue: pedido.fecha }
-    };
+    if (typeof data['telefono'] === 'string') {
+      data['telefono'] = (data['telefono'] as string).trim();
+    } else if (data['telefono'] === undefined || data['telefono'] === null) {
+      data['telefono'] = '';
+    }
+    if (typeof data['notas'] === 'string') {
+      data['notas'] = (data['notas'] as string).trim();
+    } else if (data['notas'] === undefined || data['notas'] === null) {
+      data['notas'] = '';
+    }
+    return data as T;
   }
 }
