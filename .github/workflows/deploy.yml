@@ -1,9 +1,14 @@
-name: Deploy to Firebase Hosting
+name: Deploy to Firebase
 
 # Este workflow se dispara cuando se hace push a main (o merge de un PR).
 # Requiere approval manual del environment "production" antes de ejecutar.
 # Resultado: cada cambio pasa por 1) PR review + 2) deploy approval,
 # ambos controlados por el Owner de la org.
+#
+# Desplegamos en este orden:
+#   1. Firestore rules (deben ir antes que el hosting para que el
+#      backend acepte las escrituras que haga el sitio en produccion).
+#   2. Hosting (Angular build estatico).
 
 on:
   push:
@@ -19,7 +24,7 @@ concurrency:
 
 jobs:
   build_and_deploy:
-    name: Build & Deploy to Firebase Hosting
+    name: Build & Deploy to Firebase
     runs-on: ubuntu-latest
     environment: production
     steps:
@@ -40,6 +45,20 @@ jobs:
 
       - name: Build Angular app
         run: npm run build -- --configuration production
+
+      - name: Setup Firebase CLI
+        run: npm install -g firebase-tools
+
+      - name: Deploy Firestore Rules
+        # Escribimos el service account a un archivo y apuntamos
+        # GOOGLE_APPLICATION_CREDENTIALS ahi para que firebase CLI
+        # se autentique sin necesidad de hacer login interactivo.
+        run: |
+          echo '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > /tmp/sa.json
+          firebase deploy --only firestore:rules --project camiseta-d74e5 --non-interactive
+          rm -f /tmp/sa.json
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: /tmp/sa.json
 
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0

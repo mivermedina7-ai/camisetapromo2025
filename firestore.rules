@@ -76,7 +76,7 @@ service cloud.firestore {
           'promocion',
           'mensaje',
           'imagenUrl',
-          'imagenPath',
+          'imagenPublicId',
           'estado',
           'fecha'
         ])
