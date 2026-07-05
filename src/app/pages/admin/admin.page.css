@@ -93,3 +93,149 @@
     grid-template-columns: 1fr;
   }
 }
+
+.admin-managers {
+  display: grid;
+  gap: 16px;
+}
+
+.admin-help {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.admin-help strong {
+  color: var(--ink);
+}
+
+.admin-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: end;
+}
+
+@media (max-width: 720px) {
+  .admin-form {
+    grid-template-columns: 1fr;
+  }
+}
+
+.admin-form .field {
+  display: grid;
+  gap: 6px;
+}
+
+.admin-form .field span {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.admin-form input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--white);
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+.admin-form input:focus {
+  outline: 2px solid var(--navy);
+  outline-offset: 1px;
+  border-color: var(--navy);
+}
+
+.admin-form button[disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.admin-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--white);
+  flex-wrap: wrap;
+}
+
+.admin-list li.founder {
+  border-color: var(--navy);
+  background: rgba(13, 38, 79, 0.04);
+}
+
+.admin-list li.admin-empty {
+  text-align: center;
+  color: var(--muted);
+  justify-content: center;
+  font-style: italic;
+}
+
+.admin-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex: 1 1 240px;
+}
+
+.admin-info strong {
+  color: var(--ink);
+  word-break: break-all;
+}
+
+.admin-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--navy);
+  color: var(--white);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.admin-tag.muted {
+  background: var(--line);
+  color: var(--muted);
+}
+
+.admin-meta {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.btn.btn-ghost.danger {
+  background: transparent;
+  color: #b3261e;
+  border: 1px solid #f1c4c1;
+}
+
+.btn.btn-ghost.danger:hover {
+  background: #fdecea;
+}
+
+.admin-note {
+  font-size: 0.82rem;
+  color: var(--muted);
+  margin: 0;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line);
+}

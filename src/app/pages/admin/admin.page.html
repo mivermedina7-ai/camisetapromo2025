@@ -102,6 +102,71 @@
         (eliminar)="eliminarRecuerdo($event)">
       </app-recuerdo-gallery>
     </section>
+
+    <section class="surface-panel admin-managers">
+      <div class="panel-heading">
+        <i class="fas fa-user-shield"></i>
+        <div>
+          <h2>Administradores autorizados</h2>
+          <p>Gestiona quién puede entrar al panel.</p>
+        </div>
+      </div>
+
+      <p class="admin-help" *ngIf="user$ | async as currentUser">
+        Tu sesión actual: <strong>{{ currentUser.email }}</strong>
+      </p>
+
+      <form class="admin-form" *ngIf="user$ | async as currentUser" (ngSubmit)="agregarAdmin(currentUser.email)">
+        <label class="field">
+          <span>Correo del nuevo administrador</span>
+          <input
+            type="email"
+            name="nuevoAdminEmail"
+            [(ngModel)]="nuevoAdminEmail"
+            placeholder="persona@correo.com"
+            autocomplete="off"
+            required>
+        </label>
+        <button class="btn btn-primary" type="submit" [disabled]="adminGuardando">
+          <i class="fas fa-user-plus"></i>
+          {{ adminGuardando ? 'Agregando...' : 'Agregar admin' }}
+        </button>
+      </form>
+
+      <p class="status error" *ngIf="adminError">
+        <i class="fas fa-exclamation-circle"></i>
+        {{ adminError }}
+      </p>
+
+      <ul class="admin-list" *ngIf="admins$ | async as admins">
+        <li *ngFor="let admin of admins" [class.founder]="esFounder(admin.email)">
+          <div class="admin-info">
+            <strong>{{ admin.email }}</strong>
+            <span class="admin-tag" *ngIf="esFounder(admin.email)">Fundador</span>
+            <span class="admin-tag muted" *ngIf="!esFounder(admin.email)">Editor</span>
+            <span class="admin-meta" *ngIf="!esFounder(admin.email) && admin.addedBy">
+              Agregado por {{ admin.addedBy }}
+            </span>
+          </div>
+          <button
+            class="btn btn-ghost danger"
+            type="button"
+            *ngIf="!esFounder(admin.email)"
+            (click)="eliminarAdmin(admin)">
+            <i class="fas fa-user-minus"></i>
+            Remover
+          </button>
+        </li>
+        <li *ngIf="admins.length === 0" class="admin-empty">
+          Aún no hay administradores registrados.
+        </li>
+      </ul>
+
+      <p class="admin-note">
+        Los <strong>fundadores</strong> están definidos en el código y no se pueden remover
+        desde aquí para evitar bloqueos accidentales.
+      </p>
+    </section>
   </ng-container>
 
   <ng-template #loginPanel>

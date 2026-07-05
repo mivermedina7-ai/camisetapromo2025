@@ -1,9 +1,48 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    function isAdmin() {
+    function isFounder() {
       return request.auth != null
-        && request.auth.token.email in ['mivermedina7@gmail.com'];
+        && request.auth.token.email in [
+          'mivermedina7@gmail.com',
+          'williamir1234@gmail.com'
+        ];
+    }
+
+    function isListedAdmin() {
+      return request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.token.email));
+    }
+
+    function isAdmin() {
+      return isFounder() || isListedAdmin();
+    }
+
+    match /admins/{adminEmail} {
+      allow read: if isAdmin();
+      allow create: if isAdmin()
+        && request.resource.data.keys().hasOnly([
+          'email',
+          'role',
+          'addedBy',
+          'addedAt',
+          'creadoEn'
+        ])
+        && request.resource.data.email is string
+        && request.resource.data.email == adminEmail
+        && request.resource.data.role in ['editor', 'founder']
+        && request.resource.data.addedBy is string
+        && request.resource.data.addedAt is string;
+      allow update: if isFounder()
+        && request.resource.data.keys().hasOnly([
+          'email',
+          'role',
+          'addedBy',
+          'addedAt',
+          'creadoEn'
+        ])
+        && request.resource.data.role in ['editor', 'founder'];
+      allow delete: if isAdmin();
     }
 
     match /pedidos_camisetas/{pedidoId} {

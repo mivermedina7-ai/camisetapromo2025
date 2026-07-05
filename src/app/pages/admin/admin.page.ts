@@ -8,11 +8,13 @@ import { PartidoFormComponent } from '../../components/partido-form/partido-form
 import { PartidoListComponent } from '../../components/partido-list/partido-list.component';
 import { PedidoDashboardComponent } from '../../components/pedido-dashboard/pedido-dashboard.component';
 import { AgendaItem } from '../../models/agenda.model';
+import { Admin } from '../../models/admin.model';
 import { PedidosTableComponent } from '../../components/pedidos-table/pedidos-table.component';
 import { Partido } from '../../models/partido.model';
 import { Pedido } from '../../models/pedido.model';
 import { Recuerdo } from '../../models/recuerdo.model';
 import { AdminAuthService } from '../../services/admin-auth.service';
+import { AdminsService } from '../../services/admins.service';
 import { AgendaService } from '../../services/agenda.service';
 import { CsvExportService } from '../../services/csv-export.service';
 import { PartidosService } from '../../services/partidos.service';
@@ -38,6 +40,7 @@ import { RecuerdosService } from '../../services/recuerdos.service';
 })
 export class AdminPageComponent {
   private readonly adminAuth = inject(AdminAuthService);
+  private readonly adminsService = inject(AdminsService);
   private readonly agendaService = inject(AgendaService);
   private readonly pedidosService = inject(PedidosService);
   private readonly recuerdosService = inject(RecuerdosService);
@@ -47,15 +50,22 @@ export class AdminPageComponent {
 
   readonly user$ = this.adminAuth.user$;
   readonly isAdmin$ = this.adminAuth.isAdmin$;
+  readonly admins$ = this.adminAuth.admins$;
   readonly agenda$ = this.agendaService.obtenerAgenda();
   readonly pedidos$ = this.pedidosService.obtenerPedidos();
   readonly recuerdos$ = this.recuerdosService.obtenerTodos();
   readonly partidos$ = this.partidosService.obtenerPartidos();
 
+  readonly founderEmails = this.adminsService.founderEmails;
+
   loginError = '';
   actionMessage = '';
   email = '';
   password = '';
+
+  nuevoAdminEmail = '';
+  adminError = '';
+  adminGuardando = false;
 
   async login(): Promise<void> {
     this.loginError = '';
@@ -160,6 +170,65 @@ export class AdminPageComponent {
 
     await this.partidosService.eliminarPartido(partido.id);
     this.mostrarAccion('Partido eliminado.');
+  }
+
+  esFounder(email: string): boolean {
+    return this.adminsService.esFounder(email);
+  }
+
+  esMiCuenta(admin: Admin, userEmail: string | null | undefined): boolean {
+    if (!userEmail || !admin.email) {
+      return false;
+    }
+    return userEmail.toLowerCase() === admin.email.toLowerCase();
+  }
+
+  async agregarAdmin(userEmail: string | null | undefined): Promise<void> {
+    this.adminError = '';
+    const correo = this.nuevoAdminEmail.trim();
+    if (!correo) {
+      this.adminError = 'Ingresa un correo.';
+      return;
+    }
+    if (!userEmail) {
+      this.adminError = 'No hay sesión activa.';
+      return;
+    }
+
+    this.adminGuardando = true;
+    try {
+      await this.adminsService.agregarAdmin(correo, 'editor', userEmail);
+      this.nuevoAdminEmail = '';
+      this.mostrarAccion(`Admin ${correo} agregado.`);
+    } catch (error: any) {
+      this.adminError = error?.message || 'No se pudo agregar al admin.';
+    } finally {
+      this.adminGuardando = false;
+      this.cdr.detectChanges();
+    }
+  }
+
+  async eliminarAdmin(admin: Admin): Promise<void> {
+    if (!admin.email) {
+      return;
+    }
+    if (this.esFounder(admin.email)) {
+      this.adminError = 'Los fundadores no se pueden remover desde el panel.';
+      return;
+    }
+    if (!confirm(`Remover a ${admin.email} como administrador?`)) {
+      return;
+    }
+
+    this.adminError = '';
+    try {
+      await this.adminsService.eliminarAdmin(admin.email);
+      this.mostrarAccion(`Admin ${admin.email} removido.`);
+    } catch (error: any) {
+      this.adminError = error?.message || 'No se pudo remover al admin.';
+    } finally {
+      this.cdr.detectChanges();
+    }
   }
 
   private mostrarAccion(message: string): void {

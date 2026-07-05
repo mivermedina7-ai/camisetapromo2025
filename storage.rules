@@ -1,9 +1,21 @@
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    function isAdmin() {
+    function isFounder() {
       return request.auth != null
-        && request.auth.token.email in ['mivermedina7@gmail.com'];
+        && request.auth.token.email in [
+          'mivermedina7@gmail.com',
+          'williamir1234@gmail.com'
+        ];
+    }
+
+    function isListedAdmin() {
+      return request.auth != null
+        && firestore.exists(/databases/(default)/documents/admins/$(request.auth.token.email));
+    }
+
+    function isAdmin() {
+      return isFounder() || isListedAdmin();
     }
 
     match /recuerdos/{allPaths=**} {

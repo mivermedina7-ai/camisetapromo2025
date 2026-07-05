@@ -1,7 +1,8 @@
 export const environment = {
   production: false,
-  adminEmails: [
-    'mivermedina7@gmail.com'
+founderEmails: [
+    'mivermedina7@gmail.com',
+    'williamir1234@gmail.com'
   ],
   firebase: {
     apiKey: "AIzaSyBqwNq4_5B_8SCejMki2eeJE-nOdr2HYlA",
