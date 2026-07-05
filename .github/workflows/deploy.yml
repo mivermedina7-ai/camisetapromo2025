@@ -31,13 +31,12 @@ jobs:
         with:
           node-version: '22'
 
-      - name: Enable corepack and pin npm version
-        run: |
-          corepack enable
-          corepack prepare npm@11.16.0 --activate
-
       - name: Install dependencies
-        run: npm ci
+        # Usamos npm install en vez de npm ci porque el lockfile fue
+        # generado con npm 11 (definido en packageManager) y los runners
+        # de GitHub vienen con npm 10 por defecto, lo que rompe el
+        # parseo. npm install es mas permisivo con estos mismatches.
+        run: npm install --no-audit --no-fund --legacy-peer-deps
 
       - name: Build Angular app
         run: npm run build -- --configuration production
