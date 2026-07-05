@@ -1,27 +1,143 @@
-.sport-note {
-  margin-top: 22px;
-  padding: 22px;
+.sports-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 380px) 1fr;
+  gap: 22px;
+  align-items: start;
+  margin-bottom: 22px;
+}
+
+.sports-form {
+  display: grid;
+  gap: 16px;
+}
+
+.discipline-picker {
+  display: grid;
+  gap: 8px;
+}
+
+.discipline-option {
+  min-height: 52px;
   border: 1px solid var(--line);
-  border-left: 4px solid var(--maroon);
   border-radius: 8px;
   background: var(--white);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 800;
   display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.discipline-option i {
+  width: 28px;
+  color: var(--maroon);
+  text-align: center;
+}
+
+.discipline-option.active {
+  background: var(--navy);
+  border-color: var(--navy);
+  color: var(--white);
+}
+
+.discipline-option.active i {
+  color: var(--gold);
+}
+
+.sports-summary {
+  min-width: 0;
+}
+
+.discipline-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
 }
 
-.sport-note i {
-  color: var(--maroon);
-  margin-top: 4px;
+.discipline-card {
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  display: grid;
+  gap: 12px;
 }
 
-.sport-note h2 {
-  margin: 0 0 8px;
+.discipline-card header {
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  gap: 12px;
+  align-items: start;
+}
+
+.discipline-card header > i {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: var(--linen);
+  color: var(--maroon);
+  display: grid;
+  place-items: center;
+}
+
+.discipline-card h3 {
+  margin: 0 0 4px;
   color: var(--ink);
   font-family: var(--font-display);
+  font-size: 1.02rem;
 }
 
-.sport-note p {
+.discipline-card p {
   margin: 0;
   color: var(--muted);
-  line-height: 1.6;
+  line-height: 1.45;
+  font-size: 0.86rem;
+}
+
+.discipline-card header strong {
+  min-width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: var(--navy);
+  color: var(--white);
+  display: grid;
+  place-items: center;
+}
+
+.discipline-card ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.discipline-card li {
+  padding: 5px 8px;
+  border-radius: 6px;
+  background: var(--linen);
+  color: var(--ink);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.empty-discipline {
+  font-style: italic;
+}
+
+@media (max-width: 1080px) {
+  .sports-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .discipline-grid {
+    grid-template-columns: 1fr;
+  }
 }

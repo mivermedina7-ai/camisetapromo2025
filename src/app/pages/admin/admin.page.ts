@@ -10,9 +10,9 @@ import { PedidoDashboardComponent } from '../../components/pedido-dashboard/pedi
 import { AgendaItem } from '../../models/agenda.model';
 import { Admin } from '../../models/admin.model';
 import { PedidosTableComponent } from '../../components/pedidos-table/pedidos-table.component';
-import { Partido } from '../../models/partido.model';
+import { InscripcionDeportiva, Partido } from '../../models/partido.model';
 import { Pedido } from '../../models/pedido.model';
-import { Recuerdo } from '../../models/recuerdo.model';
+import { ComentarioRecuerdo, Recuerdo } from '../../models/recuerdo.model';
 import { AdminAuthService } from '../../services/admin-auth.service';
 import { AdminsService } from '../../services/admins.service';
 import { AgendaService } from '../../services/agenda.service';
@@ -54,7 +54,9 @@ export class AdminPageComponent {
   readonly agenda$ = this.agendaService.obtenerAgenda();
   readonly pedidos$ = this.pedidosService.obtenerPedidos();
   readonly recuerdos$ = this.recuerdosService.obtenerTodos();
+  readonly comentarios$ = this.recuerdosService.obtenerComentariosTodos();
   readonly partidos$ = this.partidosService.obtenerPartidos();
+  readonly inscripcionesDeportivas$ = this.partidosService.obtenerInscripcionesDeportivas();
 
   readonly founderEmails = this.adminsService.founderEmails;
 
@@ -145,6 +147,24 @@ export class AdminPageComponent {
     this.mostrarAccion('Recuerdo destacado.');
   }
 
+  async aprobarComentario(comentario: ComentarioRecuerdo): Promise<void> {
+    if (!comentario.id) {
+      return;
+    }
+
+    await this.recuerdosService.aprobarComentario(comentario.id);
+    this.mostrarAccion('Comentario aprobado.');
+  }
+
+  async eliminarComentario(comentario: ComentarioRecuerdo): Promise<void> {
+    if (!comentario.id || !confirm(`Eliminar el comentario de ${comentario.nombre}?`)) {
+      return;
+    }
+
+    await this.recuerdosService.eliminarComentario(comentario.id);
+    this.mostrarAccion('Comentario eliminado.');
+  }
+
   async eliminarAgenda(item: AgendaItem): Promise<void> {
     if (!item.id || !confirm(`Eliminar ${item.titulo}?`)) {
       return;
@@ -170,6 +190,15 @@ export class AdminPageComponent {
 
     await this.partidosService.eliminarPartido(partido.id);
     this.mostrarAccion('Partido eliminado.');
+  }
+
+  async eliminarInscripcionDeportiva(inscripcion: InscripcionDeportiva): Promise<void> {
+    if (!inscripcion.id || !confirm(`Eliminar la inscripcion deportiva de ${inscripcion.nombre}?`)) {
+      return;
+    }
+
+    await this.partidosService.eliminarInscripcion(inscripcion.id);
+    this.mostrarAccion('Inscripcion deportiva eliminada.');
   }
 
   esFounder(email: string): boolean {

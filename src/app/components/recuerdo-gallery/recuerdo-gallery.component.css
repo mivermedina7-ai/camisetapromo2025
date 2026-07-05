@@ -1,11 +1,11 @@
 .memory-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
 }
 
 .memory-card {
-  min-height: 260px;
+  min-height: 100%;
   background: var(--white);
   border: 1px solid var(--line);
   border-radius: 8px;
@@ -19,17 +19,31 @@
   box-shadow: 0 0 0 2px rgba(179, 138, 60, 0.12);
 }
 
-.memory-card img {
-  width: 100%;
-  aspect-ratio: 4 / 3;
-  object-fit: cover;
+.memory-media {
+  margin: 0;
   border-bottom: 1px solid var(--line);
+  background: var(--linen);
+}
+
+.memory-media img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+  display: block;
+}
+
+.memory-media.placeholder {
+  min-height: 180px;
+  display: grid;
+  place-items: center;
+  color: var(--maroon);
+  font-size: 2rem;
 }
 
 .memory-body {
   padding: 18px;
   display: grid;
-  gap: 12px;
+  gap: 14px;
 }
 
 .memory-meta {
@@ -60,24 +74,90 @@
 }
 
 .memory-body p {
+  margin: 0;
   color: var(--body);
   line-height: 1.65;
   font-size: 0.92rem;
 }
 
+.community-tools,
 .memory-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
-@media (max-width: 980px) {
-  .memory-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.text-action {
+  border: 0;
+  background: transparent;
+  color: var(--navy);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 800;
+  cursor: pointer;
+  padding: 0;
 }
 
-@media (max-width: 640px) {
+.text-action i {
+  margin-right: 6px;
+}
+
+.comments-box {
+  padding-top: 12px;
+  border-top: 1px solid var(--line-soft);
+  display: grid;
+  gap: 12px;
+}
+
+.comment-list {
+  display: grid;
+  gap: 9px;
+}
+
+.comment-item {
+  padding: 10px 12px;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  background: var(--linen);
+}
+
+.comment-item strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--ink);
+  font-size: 0.82rem;
+}
+
+.comment-empty {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.comment-form {
+  display: grid;
+  gap: 8px;
+}
+
+.comment-form input,
+.comment-form textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font: inherit;
+  color: var(--ink);
+  background: var(--white);
+}
+
+.comment-form textarea {
+  resize: vertical;
+}
+
+.comment-form .btn {
+  justify-self: start;
+}
+
+@media (max-width: 980px) {
   .memory-grid {
     grid-template-columns: 1fr;
   }

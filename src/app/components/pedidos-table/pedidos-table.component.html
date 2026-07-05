@@ -1,23 +1,21 @@
 <div class="empty-state" *ngIf="pedidosOrdenados.length === 0">
   <i class="fas fa-shirt"></i>
-  <p>Aún no hay registros.</p>
+  <p>Aun no hay registros.</p>
 </div>
 
 <div class="orders-table" *ngIf="pedidosOrdenados.length > 0">
   <div class="orders-row head" [class.admin-row]="admin">
     <span>N°</span>
     <span>Nombre</span>
-    <span>Género</span>
-    <span>Corte</span>
+    <span>Genero</span>
     <span>Talla</span>
-    <span *ngIf="admin">Acción</span>
+    <span *ngIf="admin">Accion</span>
   </div>
 
   <div class="orders-row" [class.admin-row]="admin" *ngFor="let pedido of pedidosOrdenados">
     <strong>{{ pedido.numero }}</strong>
     <span>{{ pedido.nombre }}</span>
     <span>{{ pedido.genero || 'Pendiente' }}</span>
-    <span>{{ pedido.corte || 'Clásico' }}</span>
     <span class="size-chip">{{ pedido.talla }}</span>
     <button
       *ngIf="admin"

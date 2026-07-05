@@ -96,21 +96,11 @@ export class PedidosService {
     return `El número ${numero ?? ''} ya está registrado en la categoría ${etiqueta}. Puedes repetirlo en la otra categoría.`;
   }
 
-  private limpiar<T extends Partial<PedidoRegistro>>(pedido: T): T {
-    const data = { ...pedido } as T & Record<string, unknown>;
+  private limpiar(pedido: PedidoRegistro): PedidoRegistro {
+    const data = { ...pedido };
     if (typeof data['nombre'] === 'string') {
       data['nombre'] = (data['nombre'] as string).trim();
     }
-    if (typeof data['telefono'] === 'string') {
-      data['telefono'] = (data['telefono'] as string).trim();
-    } else if (data['telefono'] === undefined || data['telefono'] === null) {
-      data['telefono'] = '';
-    }
-    if (typeof data['notas'] === 'string') {
-      data['notas'] = (data['notas'] as string).trim();
-    } else if (data['notas'] === undefined || data['notas'] === null) {
-      data['notas'] = '';
-    }
-    return data as T;
+    return data;
   }
 }

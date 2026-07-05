@@ -1,8 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { ChangeDetectorRef, Component, EventEmitter, Output, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { CORTES_CAMISETA, GENEROS, GUIA_TALLAS, MedidaTalla } from '../../constants/tallas';
-import { CorteCamiseta, GeneroPedido, PedidoRegistro } from '../../models/pedido.model';
+import { GENEROS, GUIA_TALLAS, MedidaTalla } from '../../constants/tallas';
+import { GeneroPedido, PedidoRegistro } from '../../models/pedido.model';
 import { PedidosService } from '../../services/pedidos.service';
 
 @Component({
@@ -19,7 +19,6 @@ export class PedidoFormComponent {
   private readonly cdr = inject(ChangeDetectorRef);
 
   readonly generos = GENEROS;
-  readonly cortes = CORTES_CAMISETA;
 
   form: PedidoRegistro = this.crearFormulario();
   isLoading = false;
@@ -37,10 +36,6 @@ export class PedidoFormComponent {
   seleccionarGenero(genero: GeneroPedido): void {
     this.form.genero = genero;
     this.form.talla = this.tallasDisponibles[0]?.talla || '';
-  }
-
-  seleccionarCorte(corte: CorteCamiseta): void {
-    this.form.corte = corte;
   }
 
   async registrar(): Promise<void> {
@@ -98,10 +93,7 @@ export class PedidoFormComponent {
       nombre: '',
       numero: null,
       genero: 'hombre',
-      corte: 'clasico',
-      talla: 'M',
-      telefono: '',
-      notas: ''
+      talla: 'M'
     };
   }
 

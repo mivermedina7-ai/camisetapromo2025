@@ -52,9 +52,6 @@ service cloud.firestore {
           'numero',
           'talla',
           'genero',
-          'corte',
-          'telefono',
-          'notas',
           'fecha'
         ])
         && request.resource.data.nombre is string
@@ -64,8 +61,7 @@ service cloud.firestore {
         && request.resource.data.numero >= 1
         && request.resource.data.numero <= 99
         && request.resource.data.talla is string
-        && (!('genero' in request.resource.data) || request.resource.data.genero in ['hombre', 'mujer'])
-        && (!('corte' in request.resource.data) || request.resource.data.corte in ['clasico', 'entallado', 'amplio']);
+        && request.resource.data.genero in ['hombre', 'mujer'];
       allow update, delete: if isAdmin();
     }
 
@@ -83,6 +79,7 @@ service cloud.firestore {
         && request.resource.data.nombre is string
         && request.resource.data.nombre.size() >= 2
         && request.resource.data.nombre.size() <= 80
+        && request.resource.data.promocion == '2025'
         && request.resource.data.mensaje is string
         && request.resource.data.mensaje.size() >= 5
         && request.resource.data.mensaje.size() <= 900
@@ -90,9 +87,54 @@ service cloud.firestore {
       allow update, delete: if isAdmin();
     }
 
+    match /comentarios_recuerdos/{comentarioId} {
+      allow read: if resource.data.estado == 'aprobado' || isAdmin();
+      allow create: if request.resource.data.keys().hasOnly([
+          'recuerdoId',
+          'nombre',
+          'mensaje',
+          'estado',
+          'fecha'
+        ])
+        && request.resource.data.recuerdoId is string
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() >= 2
+        && request.resource.data.nombre.size() <= 80
+        && request.resource.data.mensaje is string
+        && request.resource.data.mensaje.size() >= 3
+        && request.resource.data.mensaje.size() <= 280
+        && request.resource.data.estado == 'pendiente';
+      allow update, delete: if isAdmin();
+    }
+
     match /partidos_reencuentro/{partidoId} {
       allow read: if true;
       allow create, update, delete: if isAdmin();
+    }
+
+    match /inscripciones_deportivas/{inscripcionId} {
+      allow read: if true;
+      allow create: if request.resource.data.keys().hasOnly([
+          'nombre',
+          'disciplinas',
+          'promocion',
+          'fecha'
+        ])
+        && request.resource.data.nombre is string
+        && request.resource.data.nombre.size() >= 2
+        && request.resource.data.nombre.size() <= 80
+        && request.resource.data.disciplinas is list
+        && request.resource.data.disciplinas.size() >= 1
+        && request.resource.data.disciplinas.size() <= 5
+        && request.resource.data.disciplinas.hasOnly([
+          'voley-mixto',
+          'voley-femenino',
+          'basket-mujer',
+          'basket-varones',
+          'futbol'
+        ])
+        && request.resource.data.promocion == '2025';
+      allow update, delete: if isAdmin();
     }
 
     match /agenda_reencuentro/{agendaId} {

@@ -1,33 +1,55 @@
-<section class="page-hero compact">
-  <div class="page-shell">
-    <span class="kicker">Memoria compartida</span>
-    <h1>Fotos y experiencias</h1>
-    <p>Un espacio para conservar saludos, momentos y fotografías del reencuentro.</p>
+<section class="page-hero compact community-hero">
+  <div class="page-shell community-hero-grid">
+    <div>
+      <span class="kicker">Comunidad Promocion 2025</span>
+      <h1>Fotos, historias y comentarios</h1>
+      <p>Un muro vivo para conservar momentos de la Promocion 2025: recuerdos aprobados, comentarios moderados y fotos compartidas por los companeros.</p>
+    </div>
+
+    <div class="community-stats" *ngIf="resumen$ | async as resumen">
+      <article>
+        <strong>{{ resumen.recuerdos }}</strong>
+        <span>recuerdos</span>
+      </article>
+      <article>
+        <strong>{{ resumen.destacados }}</strong>
+        <span>destacados</span>
+      </article>
+      <article>
+        <strong>{{ resumen.comentarios }}</strong>
+        <span>comentarios</span>
+      </article>
+    </div>
   </div>
 </section>
 
 <main class="page-shell content-band">
-  <div class="split-layout community-layout">
-    <section class="surface-panel">
+  <div class="community-board">
+    <aside class="surface-panel community-submit">
       <div class="panel-heading">
         <i class="fas fa-pen-nib"></i>
         <div>
           <h2>Compartir recuerdo</h2>
-          <p>Los aportes pasan por revisión antes de publicarse.</p>
+          <p>Publica una foto, una anecdota o un saludo. Administracion lo revisa antes de mostrarlo.</p>
         </div>
       </div>
       <app-recuerdo-form></app-recuerdo-form>
-    </section>
+    </aside>
 
     <section class="surface-panel gallery-panel">
-      <div class="panel-heading">
+      <div class="panel-heading board-heading">
         <i class="fas fa-camera-retro"></i>
         <div>
-          <h2>Muro de recuerdos</h2>
-          <p>Publicaciones aprobadas por administración.</p>
+          <h2>Muro de la promocion</h2>
+          <p>Comenta recuerdos aprobados y sigue la historia compartida de la Promocion 2025.</p>
         </div>
       </div>
-      <app-recuerdo-gallery [recuerdos]="recuerdos$ | async"></app-recuerdo-gallery>
+
+      <app-recuerdo-gallery
+        [recuerdos]="recuerdos$ | async"
+        [comentarios]="comentarios$ | async"
+        [allowComments]="true">
+      </app-recuerdo-gallery>
     </section>
   </div>
 </main>

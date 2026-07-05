@@ -239,3 +239,85 @@
   padding-top: 8px;
   border-top: 1px dashed var(--line);
 }
+
+.admin-comments {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-comment {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  display: grid;
+  gap: 10px;
+}
+
+.admin-comment.pending {
+  border-left: 4px solid var(--gold);
+}
+
+.admin-comment > div:first-child {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.admin-comment strong {
+  color: var(--ink);
+}
+
+.admin-comment span {
+  padding: 3px 8px;
+  border-radius: 999px;
+  background: var(--linen);
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.admin-comment p {
+  margin: 0;
+  color: var(--body);
+  line-height: 1.55;
+}
+
+.admin-comment-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.sports-admin-list {
+  display: grid;
+  gap: 10px;
+}
+
+.sports-admin-item {
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.sports-admin-item div {
+  display: grid;
+  gap: 4px;
+}
+
+.sports-admin-item strong {
+  color: var(--ink);
+}
+
+.sports-admin-item span {
+  color: var(--muted);
+  font-size: 0.84rem;
+}

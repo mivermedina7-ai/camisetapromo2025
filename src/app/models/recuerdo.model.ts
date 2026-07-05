@@ -1,4 +1,5 @@
 export type EstadoRecuerdo = 'pendiente' | 'aprobado' | 'destacado';
+export type EstadoComentarioRecuerdo = 'pendiente' | 'aprobado';
 
 export interface Recuerdo {
   id?: string;
@@ -21,5 +22,20 @@ export interface Recuerdo {
 export interface RecuerdoRegistro {
   nombre: string;
   promocion?: string;
+  mensaje: string;
+}
+
+export interface ComentarioRecuerdo {
+  id?: string;
+  recuerdoId: string;
+  nombre: string;
+  mensaje: string;
+  estado: EstadoComentarioRecuerdo;
+  fecha: string;
+}
+
+export interface ComentarioRecuerdoRegistro {
+  recuerdoId: string;
+  nombre: string;
   mensaje: string;
 }

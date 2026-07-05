@@ -5,13 +5,15 @@
   </label>
 
   <label class="field">
-    <span>Promoción</span>
-    <input type="text" name="promocion" [(ngModel)]="form.promocion" placeholder="Ej. 2026">
-  </label>
-
-  <label class="field">
     <span>Mensaje</span>
-    <textarea name="mensaje" [(ngModel)]="form.mensaje" rows="5" placeholder="Una anécdota, saludo o recuerdo" required></textarea>
+    <textarea
+      name="mensaje"
+      [(ngModel)]="form.mensaje"
+      rows="5"
+      minlength="5"
+      maxlength="900"
+      placeholder="Cuenta una anecdota, deja un saludo o comparte un momento de la Promocion 2025"
+      required></textarea>
   </label>
 
   <label class="upload-field">
