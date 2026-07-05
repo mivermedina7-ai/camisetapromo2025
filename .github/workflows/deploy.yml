@@ -1,0 +1,48 @@
+name: Deploy to Firebase Hosting
+
+# Este workflow se dispara cuando se hace push a main (o merge de un PR).
+# Requiere approval manual del environment "production" antes de ejecutar.
+# Resultado: cada cambio pasa por 1) PR review + 2) deploy approval,
+# ambos controlados por el Owner de la org.
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    # Permite disparar el deploy manualmente desde la UI de GitHub
+    # si necesitas re-deployar sin un nuevo commit.
+
+concurrency:
+  group: production
+  cancel-in-progress: false
+
+jobs:
+  build_and_deploy:
+    name: Build & Deploy to Firebase Hosting
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build Angular app
+        run: npm run build -- --configuration production
+
+      - name: Deploy to Firebase Hosting
+        uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          channelId: live
+          projectId: camiseta-d74e5
+          publicDir: dist/camisetapromo2025/browser
