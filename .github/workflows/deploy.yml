@@ -30,7 +30,11 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: 'npm'
+
+      - name: Enable corepack and pin npm version
+        run: |
+          corepack enable
+          corepack prepare npm@11.16.0 --activate
 
       - name: Install dependencies
         run: npm ci
