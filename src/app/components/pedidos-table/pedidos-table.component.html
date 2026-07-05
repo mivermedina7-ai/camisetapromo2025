@@ -1,15 +1,15 @@
 <div class="empty-state" *ngIf="pedidosOrdenados.length === 0">
   <i class="fas fa-shirt"></i>
-  <p>Aun no hay registros.</p>
+  <p>Aún no hay registros.</p>
 </div>
 
 <div class="orders-table" *ngIf="pedidosOrdenados.length > 0">
   <div class="orders-row head" [class.admin-row]="admin">
     <span>N°</span>
     <span>Nombre</span>
-    <span>Genero</span>
+    <span>Género</span>
     <span>Talla</span>
-    <span *ngIf="admin">Accion</span>
+    <span *ngIf="admin">Acción</span>
   </div>
 
   <div class="orders-row" [class.admin-row]="admin" *ngFor="let pedido of pedidosOrdenados">

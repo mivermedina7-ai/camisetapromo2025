@@ -6,12 +6,12 @@
     </label>
 
     <label class="field">
-      <span>Numero</span>
+      <span>Número</span>
       <input type="number" name="numero" [(ngModel)]="form.numero" min="1" max="99" placeholder="10" required>
     </label>
   </div>
 
-  <div class="choice-group" aria-label="Genero">
+  <div class="choice-group" aria-label="Género">
     <button
       *ngFor="let item of generos"
       type="button"

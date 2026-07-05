@@ -1,6 +1,6 @@
 <div class="empty-state" *ngIf="items.length === 0">
   <i class="fas fa-camera-retro"></i>
-  <p>No hay recuerdos publicados todavia.</p>
+  <p>No hay recuerdos publicados todavía.</p>
 </div>
 
 <div class="memory-grid" *ngIf="items.length > 0">
@@ -39,7 +39,7 @@
           </article>
         </div>
         <ng-template #noComments>
-          <p class="comment-empty">Se el primero en dejar un comentario.</p>
+          <p class="comment-empty">Sé el primero en dejar un comentario.</p>
         </ng-template>
 
         <form class="comment-form" (submit)="$event.preventDefault()">

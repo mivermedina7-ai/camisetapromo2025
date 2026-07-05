@@ -65,9 +65,9 @@ export class PartidosPageComponent {
         disciplinas: this.form.disciplinas
       });
       this.form = { nombre: '', disciplinas: [] };
-      this.successMessage = 'Inscripcion deportiva guardada.';
+      this.successMessage = 'Inscripción deportiva guardada.';
     } catch (error: any) {
-      this.errorMessage = error?.message || 'No se pudo guardar tu inscripcion.';
+      this.errorMessage = error?.message || 'No se pudo guardar tu inscripción.';
     } finally {
       this.isLoading = false;
       this.cdr.detectChanges();

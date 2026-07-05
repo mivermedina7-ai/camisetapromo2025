@@ -50,7 +50,7 @@ export class PartidoFormComponent {
   private crearFormulario(): PartidoRegistro {
     return {
       deporte: 'Fútbol',
-      categoria: 'Promocion 2025',
+      categoria: 'Promoción 2025',
       equipoA: '',
       equipoB: '',
       fecha: '',

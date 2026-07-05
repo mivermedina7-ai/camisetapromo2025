@@ -1,8 +1,8 @@
-# Promocion 2025 - IEE Jose Maria Arguedas
+# Promoción 2025 - IEE José María Arguedas
 
-Sitio web para organizar el reencuentro de la Promocion 2025 de la IEE Jose Maria Arguedas: registro de camisetas, guia de tallas, agenda, deportes, comunidad con recuerdos/comentarios y panel privado de administracion.
+Sitio web para organizar el reencuentro de la Promoción 2025 de la IEE José María Arguedas: registro de camisetas, guía de tallas, agenda, deportes, comunidad con recuerdos/comentarios y panel privado de administración.
 
-**Demo en produccion:** https://camisetapromo2025.web.app
+**Demo en producción:** https://camisetapromo2025.web.app
 **Proyecto Firebase:** `camiseta-d74e5`
 **Repo:** https://github.com/promocion2025/camisetapromo2025
 
@@ -15,25 +15,25 @@ Sitio web para organizar el reencuentro de la Promocion 2025 de la IEE Jose Mari
 
 ## Secciones
 
-- `/` Home de la Promocion 2025.
-- `/registro` Registro de camiseta: nombre, numero, genero y talla.
-- `/tallas` Guia de medidas por genero.
+- `/` Home de la Promoción 2025.
+- `/registro` Registro de camiseta: nombre, número, género y talla.
+- `/tallas` Guía de medidas por género.
 - `/agenda` Misa, ceremonia, almuerzo, deporte y baile.
-- `/partidos` Inscripcion publica a disciplinas deportivas y programacion.
+- `/partidos` Inscripción pública a disciplinas deportivas y programación.
 - `/comunidad` Recuerdos, fotos y comentarios moderados.
-- `/admin` Gestion privada de pedidos, agenda, partidos, inscritos, recuerdos, comentarios y admins.
+- `/admin` Gestión privada de pedidos, agenda, partidos, inscritos, recuerdos, comentarios y admins.
 
 ## Colecciones Firestore
 
-| Coleccion | Lectura | Escritura |
+| Colección | Lectura | Escritura |
 | --- | --- | --- |
-| `pedidos_camisetas` | publica | publica con validacion |
-| `recuerdos_promocion` | aprobados/destacados o admin | publica como pendiente |
-| `comentarios_recuerdos` | aprobados o admin | publica como pendiente |
-| `inscripciones_deportivas` | publica | publica con validacion |
-| `partidos_reencuentro` | publica | solo admin |
-| `agenda_reencuentro` | publica | solo admin |
-| `admins` | solo admin | admin/founder segun reglas |
+| `pedidos_camisetas` | pública | pública con validación |
+| `recuerdos_promocion` | aprobados/destacados o admin | pública como pendiente |
+| `comentarios_recuerdos` | aprobados o admin | pública como pendiente |
+| `inscripciones_deportivas` | pública | pública con validación |
+| `partidos_reencuentro` | pública | solo admin |
+| `agenda_reencuentro` | pública | solo admin |
+| `admins` | solo admin | admin/founder según reglas |
 
 ## Datos principales
 

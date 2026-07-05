@@ -95,7 +95,7 @@ export class RecuerdoGalleryComponent {
         mensaje: draft.mensaje
       });
       draft.mensaje = '';
-      draft.success = 'Comentario enviado para revision.';
+      draft.success = 'Comentario enviado para revisión.';
     } catch (error: any) {
       draft.error = error?.message || 'No se pudo enviar el comentario.';
     } finally {

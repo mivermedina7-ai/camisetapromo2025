@@ -193,12 +193,12 @@ export class AdminPageComponent {
   }
 
   async eliminarInscripcionDeportiva(inscripcion: InscripcionDeportiva): Promise<void> {
-    if (!inscripcion.id || !confirm(`Eliminar la inscripcion deportiva de ${inscripcion.nombre}?`)) {
+    if (!inscripcion.id || !confirm(`¿Eliminar la inscripción deportiva de ${inscripcion.nombre}?`)) {
       return;
     }
 
     await this.partidosService.eliminarInscripcion(inscripcion.id);
-    this.mostrarAccion('Inscripcion deportiva eliminada.');
+    this.mostrarAccion('Inscripción deportiva eliminada.');
   }
 
   esFounder(email: string): boolean {

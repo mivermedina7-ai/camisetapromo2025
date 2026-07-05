@@ -6,7 +6,7 @@ import { Pedido } from '../models/pedido.model';
 })
 export class CsvExportService {
   exportarPedidos(pedidos: Pedido[]): void {
-    const headers = ['Nombre', 'Genero', 'Talla', 'Numero camiseta', 'Fecha'];
+    const headers = ['Nombre', 'Género', 'Talla', 'Número camiseta', 'Fecha'];
     const rows = pedidos.map(pedido => [
       pedido.nombre,
       pedido.genero || '',
